@@ -1,3 +1,5 @@
+
+# Execute on startup
 exec --no-startup-id systemctl enable pulseaudio.service --user
 exec --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh,gpg
 exec --no-startup-id pulseaudio --start
@@ -16,29 +18,37 @@ include $HOME/.config/i3/workspaces.conf
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
+# Setting vars for command key and monitor references
+# Set your mod key (example: Ctrl instead of the usual Mod4)
 set $mod Ctrl
-set $a DP-0
-set $b DP-2
-set $c HDMI-0
 
-exec --no-startup-id xrandr --output DP-0 --mode 1920x1080 --rate 144
-exec --no-startup-id xrandr --output DP-2 --mode 2560x1440 --rate 144 --primary
-exec --no-startup-id xrandr --output HDMI-0 --mode 1920x1080 --rate 72
+# Define monitor variables
+# Monitor variables (optional)
+set $top    DP-0
+set $middle DP-2
+set $left   HDMI-0
 
-
-
-workspace 1 output $b
-workspace 2 output $b
-workspace 3 output $b
-workspace 4 output $b
-workspace 5 output $b
-workspace 6 output $b
-workspace 7 output $b
-workspace 8 output $b
-workspace 9 output $b
+# Monitor settings
+# We use exec_always so they also reapply if you reload i3 (Mod+Shift+R).
+exec_always --no-startup-id xrandr --output $top    --mode 2560x1440 --above $middle --rate 144 --primary 
+exec_always --no-startup-id xrandr --output $left   --mode 1920x1080 --left-of $middle --rate 72
+exec_always --no-startup-id xrandr --output $middle --mode 1920x1080 --rate 144
 
 
-workspace 10 output $a
+
+
+workspace 1 output $top
+workspace 2 output $top
+workspace 3 output $top
+workspace 4 output $top
+workspace 5 output $top
+workspace 6 output $top
+workspace 7 output $top
+workspace 8 output $top
+workspace 9 output $top
+
+
+workspace 10 output $middle
 #workspace 11 output $a
 #workspace 12 output $a
 #workspace 13 output $a
@@ -49,7 +59,7 @@ workspace 10 output $a
 #workspace 18 output $a
 #workspace 19 output $a
 
-workspace 20 output $c
+workspace 20 output $left
 #workspace 21 output $c
 #workspace 22 output $c
 #workspace 23 output $c
@@ -142,8 +152,7 @@ bindsym $mod+e layout toggle split
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
-# focus the parent container
-bindsym $mod+a focus parent
+# focus the parent container bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -173,10 +182,10 @@ bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
 bindsym $mod+Shift+equal move container to workspace 10
-bindsym $mod+Shift+plus move container to workspace 20
+bindsym $mod+Shift+KP_Subtract move container to workspace 20
 
 # Define the custom mode
-bindsym $mod+Mod4+1 workspace 20
+bindsym $mod+minus workspace 20
 
 bindsym $mod+Mod4+2 workspace 10
 # NOTE: This is some real tom fooliery with my keyboard layout
@@ -290,16 +299,13 @@ bindsym $mod+m move workspace to output left
 bindsym $mod+Shift+period exec systemctl suspend
 
 
-assign [class="^firefox"] workspace 20
-exec --no-startup-id firefox
-
-assign [class="^slack"] workspace 8
-exec --no-startup-id slack
+assign [class="^zen$"] workspace 20
+exec --no-startup-id flatpak run app.zen_browser.zen
 
 assign [class="^DBeaver$"] workspace 9
-exec --no-startup-id dbeaver-ce
+exec --no-startup-id flatpak run io.dbeaver.DBeaverCommunity
 
-assign [class="^vesktop$"] workspace 10
+assign [class="^vesktop$"] workspace 2
 exec --no-startup-id vesktop
 
 assign [class="^steam$"] workspace 7
@@ -312,4 +318,4 @@ exec --no-startup-id github desktop -cef-disable-gpu
 exec --no-startup-id i3-msg 'workspace 1'
 
 # Execute Konsole
-exec --no-startup-id konsole
+exec --no-startup-id konsole 'workspace 1'
